@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/crypto-trading-master/FlashLoanBSC#readme",
   "dependencies": {
+    "@pancakeswap/sdk": "^2.3.2",
     "dotenv": "^10.0.0",
     "web3": "^1.4.0"
   }
