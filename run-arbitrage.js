@@ -1,15 +1,16 @@
 require("dotenv").config();
-const { ChainId, Token, TokenAmount, Pair } = require('@pancakeswap/sdk');
+const { ChainId, Token, TokenAmount, Fetcher } = require('@pancakeswap/sdk');
 const Web3 = require("web3");
 const { mainnet: addresses } = require("./addresses");
 const web3 = new Web3(new Web3.providers.WebsocketProvider(process.env.ANKR_URL));
 
+
 const init = async () => {
     const [busd, wbnb] = await Promise.all(
         [addresses.tokens.busd, addresses.tokens.wbnb].map((tokenAddress) =>
-        Token.fetchData(ChainId.MAINNET, tokenAddress)));
+        Fetcher.fetchTokenData(ChainId.MAINNET, tokenAddress)));        
     
-    const busdWbnb = await Pair.fetchData(busd, wbnb);
+    const busdWbnb = await Fetcher.fetchPairData(busd, wbnb);
 
     web3.eth
         .subscribe("newBlockHeaders")
