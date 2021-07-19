@@ -1,11 +1,12 @@
 require("dotenv").config();
-const { ChainId, Token, TokenAmount, Fetcher } = require('@pancakeswap/sdk');
+const { ChainId: pancakeChainId, TokenAmount, Fetcher } = require('@pancakeswap/sdk');
+const { ChainId: sushiChainId, Token, Pair } = require('@sushiswap/sdk');
+//const { Sushi_ChainID, Sushi_TokenAmount, Sushi_Fetcher } = require('@sushiswap/sdk');
 const Web3 = require("web3");
 const { mainnet: addresses } = require("./addresses");
 
 const web3 = new Web3(new Web3.providers.WebsocketProvider('wss://bsc-ws-node.nariox.org:443'));
 
-const AMOUNT_BNB = 100;
 const AMOUNT_BUSD_WEI = web3.utils.toBN(web3.utils.toWei('20000'));
 const AMOUNT_BNB_WEI = web3.utils.toBN(web3.utils.toWei('1'));
 
@@ -21,7 +22,10 @@ const init = async () => {
             const busd = await Fetcher.fetchTokenData(ChainId.MAINNET, addresses.tokens.busd, provider);
             const wbnb = await Fetcher.fetchTokenData(ChainId.MAINNET, addresses.tokens.wbnb, provider);    
     
-            const busdWbnb = await Fetcher.fetchPairData(busd, wbnb, provider);
+            const sushi_busd = await Sushi_Fetcher.fetchTokenData(Sushi_ChainId.MAINNET, addresses.tokens.busd, provider);
+            const sushi_wbnb = await Sushi_Fetcher.fetchTokenData(Sushi_ChainId.MAINNET, addresses.tokens.wbnb, provider);    
+ 
+            const sushi_busdWbnb = await Fetcher.fetchPairData(sushi_busd, sushi_wbnb, provider);
 
             const pancakeswapResults = await Promise.all([
                 busdWbnb.getOutputAmount(new TokenAmount(busd, AMOUNT_BUSD_WEI)),
@@ -41,4 +45,7 @@ const init = async () => {
         });
 }
 
-init();
+//console.log(Sushi_ChainID);
+console.log(pancakeChainId);
+console.log(sushiChainId);
+//init();
