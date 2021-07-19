@@ -5,6 +5,7 @@ const { mainnet: addresses } = require("./addresses");
 //const web3 = new Web3(new Web3.providers.WebsocketProvider(process.env.ANKR_URL));
 const web3 = new Web3(new Web3.providers.WebsocketProvider('wss://bsc-ws-node.nariox.org:443'));
 
+const AMOUNT_BNB = 100;
 const AMOUNT_BUSD_WEI = web3.utils.toBN(web3.utils.toWei('20000'));
 const AMOUNT_BNB_WEI = web3.utils.toBN(web3.utils.toWei('1'));
 
@@ -23,14 +24,25 @@ const init = async () => {
         .on("data", async (block) => {
             console.log(`New block received. Block # ${block.number}`);
 
+            
+
             const pancakeswapResults = await Promise.all([
                 busdWbnb.getOutputAmount(new TokenAmount(busd, AMOUNT_BUSD_WEI)),
                 busdWbnb.getOutputAmount(new TokenAmount(wbnb, AMOUNT_BNB_WEI)),
             ]);
 
+            const pancakeswapRates = {
+                buy: parseFloat(AMOUNT_BUSD_WEI / (pancakeswapResults[0][0].toExact() * 10 ** 18)),
+                sell: parseFloat(pancakeswapResults[1][0].toExact()),
+            };
+            console.log("Pancakeswap BNB/BUSD");
+            console.log(pancakeswapRates);            
+
+            /* 
             console.log(pancakeswapResults);
             console.log('--> ' + pancakeswapResults[0][0].raw.toString());
             console.log('--> ' + pancakeswapResults[1][0].raw.toString());
+            */
 
         })
         .on("error", error => {
